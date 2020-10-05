@@ -16,28 +16,28 @@ public class PersonService {
         {"2", "Elías", "elias@mail.com"}, 
         {"3", "Casandra", "casandra@mail.com"}, 
         {"4", "Juan", "juan@mail.com"}};
-
     
-    public ArrayList<Person> getAll() {
-        ArrayList <Person> persons = new ArrayList<>();
-        for (String[] arrayPerson : arrayPersons) {
+    private static ArrayList<Person> persons = new ArrayList<Person>();
+
+    public PersonService() {
+        for (int i = 0; i < arrayPersons.length; i++) {
             Person person = new Person();
-            person.setId(Integer.parseInt(arrayPerson[0]));
-            person.setName(arrayPerson[1]);
-            person.setEmail(arrayPerson[2]);
+            person.setId(Integer.parseInt(arrayPersons[i][0]));
+            person.setName(arrayPersons[i][1]);
+            person.setEmail(arrayPersons[i][2]);
             persons.add(person);
         }
+    }
+    
+    public ArrayList<Person> getAll() {
         return persons;
     }
     
     public Person get(int id) {
         Person person = null;
-        for (String[] arrayPerson : arrayPersons) {
-            if(id == Integer.parseInt(arrayPerson[0])) {
-                person = new Person();
-                person.setId(Integer.parseInt(arrayPerson[0]));
-                person.setName(arrayPerson[1]);
-                person.setEmail(arrayPerson[2]);
+        for (Person p : persons) {
+            if(id == p.getId()) {
+                person = p;
                 break;
             }
         }
@@ -45,16 +45,17 @@ public class PersonService {
     }
     
     public Person getByEmail(String email) {
-        Person person = null;
-        for (String[] arrayPerson : arrayPersons) {
-            if(email.equals(arrayPerson[2])) {
-                person = new Person();
-                person.setId(Integer.parseInt(arrayPerson[0]));
-                person.setName(arrayPerson[1]);
-                person.setEmail(arrayPerson[2]);
+       Person person = null;
+        for (Person p : persons) {
+            if(email.equals(p.getEmail())) {
+                person = p;
                 break;
             }
         }
         return person;
+    }
+    
+    public void save(Person person) {
+        persons.add(person);
     }
 }

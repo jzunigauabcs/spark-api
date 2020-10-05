@@ -2,6 +2,7 @@ package com.routes;
 
 import com.google.gson.Gson;
 import com.controllers.PersonController;
+import com.models.Person;
 import static spark.Spark.*;
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -20,6 +21,7 @@ public class PersonRoute {
         
         PersonController personController = new PersonController();
         get("/person", (req, res) -> {
+            res.type("application/json");
             if(req.queryParams().size() > 0){
                 if(req.queryParams("email") != null) {   
                     String email = req.queryParams("email");
@@ -31,8 +33,19 @@ public class PersonRoute {
         },gson::toJson);
         get("/person/:id", "application/json",(req, res)-> {
             int id = Integer.parseInt(req.params(":id"));
+            res.type("application/json");
             return personController.show(id);
         }, gson::toJson);
+        post("/person", (req, res)-> {
+            try {
+                Person person = new Gson().fromJson(req.body(), Person.class);
+                personController.store(person);
+                return "Success";
+            } catch(Exception e) {
+                return e.getMessage();
+            }
+         
+        });
     }
     
 }

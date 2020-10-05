@@ -14,18 +14,26 @@ import com.services.PersonService;
  */
 public class PersonController {
     
+    PersonService personService;
+    public PersonController() {
+        this.personService = new PersonService();
+    }
+    
+    
+    
     public ArrayList<Person> index() {
-        PersonService personService = new PersonService();
-        return personService.getAll();
+        return this.personService.getAll();
     }
     
     public Person show(int id) {
-        PersonService personService = new PersonService();
-        return personService.get(id);
+        return this.personService.get(id);
     }
     
     public Person showByEmail(String email) {
-        PersonService personService = new PersonService();
-        return personService.getByEmail(email);
+        return this.personService.getByEmail(email);
+    }
+    
+    public void store(Person person) {
+        this.personService.save(person);
     }
 }
