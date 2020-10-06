@@ -38,6 +38,7 @@ public class PersonRoute {
         }, gson::toJson);
         post("/person", (req, res)-> {
             try {
+                System.out.print(req.body());
                 Person person = new Gson().fromJson(req.body(), Person.class);
                 personController.store(person);
                 return "Success";

@@ -5,10 +5,18 @@
  */
 package com.db;
 
+import java.sql.Connection;
+
 /**
  *
  * @author jzuniga
  */
 public class DataBase {
     
+    
+    public Connection getConnection() {
+        Connection conn = null;
+        
+        return conn;
+    }
 }
