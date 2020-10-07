@@ -22,30 +22,17 @@ public class PersonRoute {
         PersonController personController = new PersonController();
         get("/person", (req, res) -> {
             res.type("application/json");
-            if(req.queryParams().size() > 0){
-                if(req.queryParams("email") != null) {   
-                    String email = req.queryParams("email");
-                    return personController.showByEmail(email);
-                } else
-                    return null;
-            } else
-                return personController.index();
+            if(req.queryParams().size() > 0)
+                return personController.showByEmail(req, res);
+            else
+                return personController.index(req, res);
         },gson::toJson);
         get("/person/:id", "application/json",(req, res)-> {
-            int id = Integer.parseInt(req.params(":id"));
             res.type("application/json");
-            return personController.show(id);
+            return personController.show(req, res);
         }, gson::toJson);
         post("/person", (req, res)-> {
-            try {
-                System.out.print(req.body());
-                Person person = new Gson().fromJson(req.body(), Person.class);
-                personController.store(person);
-                return "Success";
-            } catch(Exception e) {
-                return e.getMessage();
-            }
-         
+            return personController.store(req, res);         
         });
     }
     
