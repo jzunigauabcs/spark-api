@@ -6,56 +6,72 @@
 package com.services;
 import com.models.Person;
 import java.util.ArrayList;
+import static com.db.ConnectionFactory.getConnection;
+import static com.config.Database.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author jzuniga
  */
 public class PersonService {
-    private String[][] arrayPersons = {
-        {"1", "Norma", "norma@mail.com"}, 
-        {"2", "Elías", "elias@mail.com"}, 
-        {"3", "Casandra", "casandra@mail.com"}, 
-        {"4", "Juan", "juan@mail.com"}};
-    
-    private static ArrayList<Person> persons = new ArrayList<Person>();
 
     public PersonService() {
-        for (int i = 0; i < arrayPersons.length; i++) {
-            Person person = new Person();
-            person.setId(Integer.parseInt(arrayPersons[i][0]));
-            person.setName(arrayPersons[i][1]);
-            person.setEmail(arrayPersons[i][2]);
-            persons.add(person);
-        }
     }
     
     public ArrayList<Person> getAll() {
+        ArrayList<Person> persons = new ArrayList<Person>();
+        String  query = "SELECT * FROM " + T_PERSON;
+        Connection conn = getConnection();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while(rs.next()) {
+                Person p = new Person();
+                p.setId(rs.getInt("id"));
+                p.setName(rs.getString("nombre"));
+                p.setEmail(rs.getString("email"));
+                persons.add(p);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PersonService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         return persons;
     }
     
     public Person get(int id) {
         Person person = null;
-        for (Person p : persons) {
-            if(id == p.getId()) {
-                person = p;
-                break;
+       String query = "SELECT * FROM " + T_PERSON + " WHERE " + T_PERSON_ID + " = ?";
+       Connection conn = getConnection();
+        try {
+            PreparedStatement pstm = conn.prepareStatement(query);
+            pstm.setInt(1, id);
+            ResultSet rs = pstm.executeQuery();
+            if(rs.next()) {
+                person = new Person();
+                person.setId(rs.getInt("id"));
+                person.setName(rs.getString("nombre"));
+                person.setEmail(rs.getString("email"));
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(PersonService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return person;
     }
     
     public Person getByEmail(String email) {
        Person person = null;
-        for (Person p : persons) {
-            if(email.equals(p.getEmail())) {
-                person = p;
-                break;
-            }
-        }
+        
         return person;
     }
     
     public void save(Person person) {
-        persons.add(person);
+        //persons.add(person);
     }
 }
